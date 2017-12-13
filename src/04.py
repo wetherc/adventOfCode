@@ -1,6 +1,6 @@
 import argparse
 
-parser = argparse.ArgumentParser(description='Compute a checksum')
+parser = argparse.ArgumentParser(description='Validate passphrases')
 parser.add_argument('--input')
 parser.add_argument('--part')
 args = parser.parse_args()
