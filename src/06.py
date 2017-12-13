@@ -1,4 +1,6 @@
 import argparse
+import csv
+import copy
 
 parser = argparse.ArgumentParser(description='Find cyclic singly-linked lists')
 parser.add_argument('--input')
@@ -22,7 +24,27 @@ def rotate(input):
     return input
 
 
+def find_loop(input, part):
+    # Brute forcing it... :-(
+    rotations = []
+    step = 0
+
+    while input not in rotations:
+        old_input = copy.deepcopy(input)
+        rotate(input)
+        rotations.append(old_input)
+        step += 1
+    rotations.append(input)
+
+    if(part == '2'):
+        output = [idx for idx, val in enumerate(rotations)
+                  if val == rotations[-1]]
+        output = output[1] - output[0]
+    else:
+        output = step
+    return output
+
 if __name__ == '__main__':
-    instructions = read_input(args.input)
-    output = escape_list(instructions, args.part)
+    instructions = read_tsv(args.input)
+    output = find_loop(next(instructions), args.part)
     print(output)
