@@ -3,6 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Compute a checksum')
 parser.add_argument('--input')
+parser.add_argument('--part')
 args = parser.parse_args()
 
 
@@ -30,27 +31,38 @@ def get_neighbors(coords):
     neighbors = [
         (x - 1, y - 1),  # lower left
         (x, y -  1),  # lower center
-        (x, y + 1),  # lower right
+        (x + 1, y - 1),  # lower right
         (x + 1, y),  # center right
         (x + 1, y + 1),  # upper right
         (x, y + 1),  # upper center
         (x - 1, y + 1),  # upper left
-        (x, y - 1)  # center left
+        (x - 1, y)  # center left
     ]
     return neighbors
 
 
 def spiralize(n):
-    points, value = [[1]], 1
-    coords = (0, 0)
-
-    while value < n:
-        value = sum(map(lambda x: points[x[0]][x[1]], get_neighbors(coords)))
-        points[coords[0]][coords[1]].append(value)
+    points = {(0, 0): 1}
+    value = points[(0, 0)]
+    x = y = dx = 0
+    dy = -1
+    while value <= n:
+        if (x, y) != (0, 0):
+            value = sum(
+                filter(None,
+                       map(lambda x: points.get(x),
+                           get_neighbors((x, y)))))
+            points[(x, y)] = value
+        if (x == y) or (x < 0 and x == -y) or (x > 0 and x == 1 - y):
+            dx, dy = -dy, dx
+        x, y = x + dx, y + dy
     return value
 
 
 if __name__ == '__main__':
-    coords = calculate_spiral(int(args.input))
-    distance = abs(coords[0]) + abs(coords[1])
-    print(distance)
+    if args.part == '1':
+        coords = calculate_spiral(int(args.input))
+        output = abs(coords[0]) + abs(coords[1])
+    else:
+        output = spiralize(int(args.input))
+    print(output)
