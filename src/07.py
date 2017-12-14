@@ -34,7 +34,8 @@ def parse_programs(input):
         program = program.split(' -> ')
         programs[sub(r'\n', '', sub(r'^([a-zA-Z]+).*$', r'\1', program[0]))] = {
             'weight': int(sub(r'^.*\(([0-9]+)\).*$', r'\1', program[0])),
-            'dsts': [sub(r'\n', '', elem) for elem in program[1].split(', ')] if 1 < len(program) else None
+            'dsts': [sub(r'\n', '', elem) for elem in program[1].split(', ')]
+                     if 1 < len(program) else None
         }
     return programs
 
