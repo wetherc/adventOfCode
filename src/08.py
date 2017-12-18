@@ -45,6 +45,7 @@ def get_register_operation(register, operation, value):
 if __name__ == '__main__':
     instructions = read_instructions(args.input)
 
+    maximum = 0
     registers = {}
     for instruction in instructions:
         if registers.get(instruction[4]) is None:
@@ -59,7 +60,13 @@ if __name__ == '__main__':
                 register=registers.get(instruction[0]),
                 operation=instruction[1],
                 value=int(instruction[2]))
+        if registers[instruction[0]] > maximum:
+            maximum = registers[instruction[0]]
+
     output = max(registers, key=registers.get)
     output = (output, registers[output])
-
-    print(output)
+    
+    if args.part == '1':
+        print(output)
+    else:
+        print(maximum)
