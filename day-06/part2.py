@@ -2,7 +2,7 @@ class Node:
     def __init__(self, name, superorbits=[], num_parents=0):
         self.name = name
         self.suborbits = []
-        self.superorbits = superorbits 
+        self.superorbits = superorbits
         self.num_parents = num_parents
 
     def has_children(self):
@@ -31,15 +31,7 @@ def build_branch(parent: Node, orbits: list) -> Node:
             )
             node = build_branch(node, orbits)
             parent.suborbits.append(node)
-    return parent 
-
-
-def count_nodes(parent: Node) -> int:
-    num_orbits = 0
-    if parent.has_children:
-        for child in parent.suborbits:
-            num_orbits += count_nodes(child)
-    return num_orbits + parent.num_parents
+    return parent
 
 
 def get_closest_ancestor(src: str, dst: str, tree: Node) -> Node:

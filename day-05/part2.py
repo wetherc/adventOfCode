@@ -1,6 +1,6 @@
 def load_input():
     input = []
-    with open('/Users/wet8104/Desktop/aoc-2019/day-05/input.txt', 'r') as f:
+    with open('./input.txt', 'r') as f:
         for line in f:
             input += [int(val.strip()) for val in line.split(',')]
     return input

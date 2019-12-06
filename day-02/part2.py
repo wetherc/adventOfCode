@@ -28,7 +28,7 @@ def calculate(_input, _noun, _verb):
             )
             offset += 4
         elif _input[offset] == 99:
-            # print('Encountered EOF. Terminating cleanly')
+            print('Encountered EOF. Terminating cleanly')
             break
         else:
             print(f'Bad inputs: noun {_noun} and verb {_verb}')
