@@ -1,4 +1,6 @@
 from typing import List
+import numpy as np
+import copy
 
 
 class Point:
@@ -18,15 +20,18 @@ def load_input() -> List[Point]:
     plane.
     '''
     points = []
-    row = 0
+    width = 0
+    height = 0
+
     with open('./input.txt', 'r') as f:
         for line in f:
             coords = [elem for elem in line]
+            width = max(width, len(coords))
             for idx, elem in enumerate(coords):
                 if elem == '#':
-                    points.append(Point(idx, row))
-            row += 1
-    return points
+                    points.append(Point(idx, height))
+            height += 1
+    return points, width, height
 
 
 def check_is_blocked(start: Point, end: Point, midpoints: List[Point]) -> bool:
@@ -79,8 +84,58 @@ def check_is_blocked(start: Point, end: Point, midpoints: List[Point]) -> bool:
     return False
 
 
+def boooOOOooom(base, asteroid_field, width, height):
+    def angle_between(p1, p2):
+        # https://stackoverflow.com/a/31735642
+        # I'm lazy
+        ang1 = np.arctan2(*p1[::-1])
+        ang2 = np.arctan2(*p2[::-1])
+        return np.rad2deg((ang1 - ang2) % (2 * np.pi))
+
+    def euclidean_distance(base, asteroid):
+        dist = ((asteroid.x - base.x)**2 + (asteroid.y - base.y)**2 )**0.5
+        return dist
+
+    coordinates = {}
+    # Set a reference at 12:00 with our asteroid base
+    # re-centered at (0, 0)
+    reference = (0, -1 * base.y)
+    for asteroid in asteroid_field:
+        distance = euclidean_distance(base, asteroid)
+        angle = angle_between(
+            (asteroid.x - base.x, asteroid.y - base.y),
+            reference)
+        if not coordinates.get(angle):
+            coordinates[angle] = {
+                distance: asteroid
+            }
+        else:
+            coordinates[angle][distance] = asteroid
+            coordinates[angle] = dict(sorted(coordinates[angle].items()))
+
+    coordinates = dict(sorted(coordinates.items()))
+    _i = 0
+    _kaboomed = None
+
+    while _i < min(200, len(asteroid_field)):
+        _temp = copy.deepcopy(coordinates)
+        for coord, asteroids in _temp.items():
+            if _i >= 200:
+                break
+            _kaboomed = asteroids[list(asteroids.keys())[0]]
+            del coordinates[coord][list(asteroids.keys())[0]]
+
+            if len(coordinates[coord]) == 0:
+                del coordinates[coord]
+
+            _i += 1
+    print(f'Kabooming {_i}th asteroid at {(_kaboomed.x, _kaboomed.y)}')
+    print((_kaboomed.x * 100) + _kaboomed.y)
+
+
 def main():
-    asteroids = load_input()
+    asteroids, width, height = load_input()
+
     # This is going to operate in O(n^3) runtime complexity
     # and that makes me hate myself, but I'm also too lazy
     # to do anything about it until it becomes an actual
@@ -110,6 +165,11 @@ def main():
     print(
         f'Asteroid at point {(max_point.x, max_point.y)} '
         f'has {max_nodes_visible} visible')
+
+    asteroid_field = [
+        asteroid for asteroid in asteroids
+        if asteroid != max_point]
+    boooOOOooom(max_point, asteroid_field, width, height)
 
 
 if __name__ == '__main__':
