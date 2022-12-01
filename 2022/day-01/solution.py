@@ -1,6 +1,12 @@
+import os
+
+
 def parse_input() -> list[list[int]]:
     parsed_input: list[list[int]] = []
-    with open('/workspaces/adventOfCode/2022/day-01/input.txt', 'r', encoding='utf-8') as f:
+    with open(
+        os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
+        'r',
+        encoding='utf-8') as f:
         _tmp: list[int] = []
         for line in f:
             _line = line.strip()
