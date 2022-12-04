@@ -38,8 +38,6 @@ def main():
     print(f'There are {sum(subsets)} elves with redundant assignments')
     print(f'There are {sum(overlaps)} elves with partially-redundant assignments')
 
-    
-
 
 if __name__ == '__main__':
     main()
