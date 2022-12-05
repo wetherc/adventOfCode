@@ -1,4 +1,5 @@
 import os
+import copy
 
 
 def parse_input():
@@ -41,7 +42,7 @@ def rearrange_crates(crates: list[list[str]], num: int, from_pos: int,
 
 def main():
     parsed_input = parse_input()
-    rearranged_crates = parsed_input['stacks']
+    rearranged_crates = copy.deepcopy(parsed_input['stacks'])
     for instruction in parsed_input['instructions']:
         rearranged_crates = rearrange_crates(
             rearranged_crates,
@@ -52,7 +53,7 @@ def main():
     
     print(''.join([crate[len(crate) - 1] for crate in rearranged_crates]))
 
-    rearranged_crates_ordered = parsed_input['stacks']
+    rearranged_crates_ordered = copy.deepcopy(parsed_input['stacks'])
     for instruction in parsed_input['instructions']:
         rearranged_crates_ordered = rearrange_crates(
             rearranged_crates_ordered,
@@ -61,7 +62,6 @@ def main():
             instruction[2],
             True
         )
-    print(rearranged_crates_ordered)
     print(''.join([crate[len(crate) - 1] for crate in rearranged_crates_ordered]))
 
 
