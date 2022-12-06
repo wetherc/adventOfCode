@@ -27,7 +27,7 @@ def parse_input():
 
 
 def rearrange_crates(crates: list[list[str]], num: int, from_pos: int,
-                     to_pos: int, preserve_order=False):
+                     to_pos: int, preserve_order: bool=False):
     _crates = crates[from_pos - 1][(-1 * num):]
     del crates[from_pos - 1][(-1 * num):]
     

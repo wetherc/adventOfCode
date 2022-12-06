@@ -1,11 +1,7 @@
 import os
 
 
-def parse_input():
-    parsed_input = {
-        'stacks': [],
-        'instructions': []
-    }
+def parse_input() -> str:
     with open(
         os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
         'r',
@@ -14,14 +10,13 @@ def parse_input():
     return parsed_input
 
 
-def find_start_marker(signal, buff_size=4):
+def find_start_marker(signal: str, buff_size: int=4) -> tuple[int, str]:
     for idx, _ in enumerate(signal):
         buffer = signal[idx:(idx + buff_size)]
         
         if len(buffer) == len(set(buffer)):
             return (idx, buffer)
-    return None
-
+    return (-1, '')
 
 
 def main():
