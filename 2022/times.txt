@@ -1,0 +1,37 @@
+
+Day 01
+
+real	0m0.051s
+user	0m0.019s
+sys	0m0.009s
+
+Day 04
+
+real	0m0.037s
+user	0m0.029s
+sys	0m0.004s
+
+Day 02
+
+real	0m0.027s
+user	0m0.022s
+sys	0m0.004s
+
+Day 05
+
+real	0m0.032s
+user	0m0.021s
+sys	0m0.004s
+
+Day 03
+
+real	0m0.028s
+user	0m0.021s
+sys	0m0.004s
+
+Day 06
+
+real	0m0.027s
+user	0m0.021s
+sys	0m0.004s
+
