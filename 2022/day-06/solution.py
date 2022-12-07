@@ -25,7 +25,7 @@ def main():
     print(f'Start marker was detected after {start_index + 4}')
 
     message_start_index, _ = find_start_marker(parsed_input, 14)
-    print(f'Start marker was detected after {message_start_index + 14}')
+    print(f'Message start was detected after {message_start_index + 14}')
 
 
 if __name__ == '__main__':
