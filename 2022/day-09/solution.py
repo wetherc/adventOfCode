@@ -1,7 +1,8 @@
 import os
+from operator import add, sub
 
 
-def parse_input() -> str:
+def parse_input() -> list[list[str]]:
     parsed_input = []
     with open(
         os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
@@ -12,83 +13,64 @@ def parse_input() -> str:
     return parsed_input
 
 
-def move_on_grid(head_pos, tail_pos, instruction):
-    tail_movement = []
-    _tail_pos = tail_pos
-    _head_pos = head_pos
-    spaces_to_move = int(instruction[1])
+def cmp(a: int, b: int) -> int:
+    return (a > b) - (a < b) 
+    
 
-    _is_initial = 0 if head_pos == tail_pos else 1
-    _is_lateral = any([
-        (head_pos[1] == tail_pos[1] and instruction[0] in ['L', 'R']),
-        (head_pos[0] == tail_pos[0] and instruction[0] in ['U', 'D'])
-    ])
-    _is_diagonal = (head_pos[1] != tail_pos[1] and head_pos[0] != tail_pos[0])
+def move_rope(rope: list[list[int]], direction: str, magnitude: int):
+    _directions = {
+        'U': [0, 1],
+        'R': [1, 0],
+        'D': [0, -1],
+        'L': [-1, 0]
+    }
 
-    delta = 0
-    if not _is_lateral:
-        delta = 1
+    tail_positions = []
+    for _ in range(magnitude):
+        rope[0] = list(map(add, rope[0], _directions[direction]))
+        
+        for knot in range(1, len(rope)):
+            rope[knot] = follow_leader(rope[knot], rope[knot - 1])
+        tail_positions.append(tuple(rope[-1]))
+    return rope, tail_positions
 
-        if instruction[0] == 'L':
-            _head_pos = [_head_pos[0] - (delta + _is_diagonal), _head_pos[1]]
-        elif instruction[0] == 'R':
-            _head_pos = [_head_pos[0] + (delta + _is_diagonal), _head_pos[1]]
-        elif instruction[0] == 'U':
-            _head_pos = [_head_pos[0], _head_pos[1] - (delta + _is_diagonal)]
-        elif instruction[0] == 'D':
-            _head_pos = [_head_pos[0], _head_pos[1] + (delta + _is_diagonal)]
 
-        spaces_to_move -= delta + _is_diagonal + 1
-        if spaces_to_move <= 0:
-            # print(instruction, _is_lateral, _head_pos, _tail_pos)
-            return _head_pos, _tail_pos, tail_movement
+def follow_leader(follower: list[int],
+                  leader: list[int]) -> list[int]:
+    _distance = list(map(sub, leader, follower))
 
-        diag = [b - a for a, b in zip(_tail_pos, _head_pos)]
-        _tail_pos = [a + b for a, b in zip(_tail_pos, diag)]
-        tail_movement.append((_tail_pos[0], _tail_pos[1]))
+    if any(abs(elem) > 1 for elem in _distance):
+        _idx = _distance.index(max(_distance, key=abs))
+        _sign = cmp(_distance[_idx], 0)
 
-    if instruction[0] == 'L':
-        _head_pos = [_head_pos[0] - (spaces_to_move + delta), _head_pos[1]]
-        tail_movement = tail_movement + [
-            (_tail_pos[0] - (elem + _is_initial), _tail_pos[1])
-            for elem in range(spaces_to_move)
-        ]
-    elif instruction[0] == 'R':
-        _head_pos = [_head_pos[0] + (spaces_to_move + delta), _head_pos[1]]
-        tail_movement = tail_movement + [
-            (_tail_pos[0] + (elem + _is_initial), _tail_pos[1])
-            for elem in range(spaces_to_move)
-        ]
-    elif instruction[0] == 'U':
-        _head_pos = [_head_pos[0], _head_pos[1] - (spaces_to_move + delta)]
-        tail_movement = tail_movement + [
-            (_tail_pos[0], _tail_pos[1] - (elem + 1))
-            for elem in range(spaces_to_move)
-        ]
-    elif instruction[0] == 'D':
-        _head_pos = [_head_pos[0], _head_pos[1] + (spaces_to_move + delta)]
-        tail_movement = tail_movement + [
-            (_tail_pos[0], _tail_pos[1] + (elem + _is_initial))
-            for elem in range(spaces_to_move)
-        ]
+        _distance[_idx] =  _distance[_idx] + (_sign * -1)
+        follower = list(map(add, follower, _distance))
+    return follower
 
-    # print(instruction, _is_lateral, _head_pos, tail_movement[-1])
-    return _head_pos, tail_movement[-1], tail_movement
+
+def simulate(num_knots, parsed_input):
+    # Simulation with a single tail knot
+    tail_history = [(0, 0)]
+    # Elem 0 is the head, elem 1 is the first knot, and so on
+    knot_positions = [[0, 0]] * (1 + num_knots)
+
+    for instruction in parsed_input:
+        knot_positions, _tail_movement = move_rope(
+            knot_positions,
+            instruction[0],
+            int(instruction[1])
+        )
+        tail_history = tail_history + _tail_movement
+    return tail_history
 
 
 def main():
     parsed_input = parse_input()
-    tail_history = [(0, 0)]
-    head_pos = [0, 0]
-    tail_pos = [0, 0]
-    for instruction in parsed_input:
-        head_pos, tail_pos, tail_movement = move_on_grid(
-            head_pos,
-            tail_pos,
-            instruction
-        )
-        # print(tail_pos, tail_movement)
-        tail_history = tail_history + tail_movement
+
+    tail_history = simulate(1, parsed_input)
+    print(len(set(tail_history)))
+
+    tail_history = simulate(9, parsed_input)
     print(len(set(tail_history)))
 
 
