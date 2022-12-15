@@ -1,61 +1,67 @@
 
 Day 01
 
-real	0m0.021s
-user	0m0.017s
-sys	0m0.004s
+real	0m0.024s
+user	0m0.015s
+sys	0m0.007s
 
 Day 02
 
-real	0m0.025s
-user	0m0.024s
-sys	0m0.000s
+real	0m0.026s
+user	0m0.022s
+sys	0m0.004s
 
 Day 03
 
-real	0m0.020s
-user	0m0.014s
-sys	0m0.007s
+real	0m0.030s
+user	0m0.019s
+sys	0m0.009s
 
 Day 04
 
 real	0m0.029s
-user	0m0.024s
+user	0m0.025s
 sys	0m0.004s
 
 Day 05
 
-real	0m0.023s
-user	0m0.019s
+real	0m0.025s
+user	0m0.020s
 sys	0m0.004s
 
 Day 06
 
-real	0m0.023s
-user	0m0.022s
-sys	0m0.000s
+real	0m0.025s
+user	0m0.020s
+sys	0m0.004s
 
 Day 07
 
-real	0m0.022s
-user	0m0.021s
-sys	0m0.000s
+real	0m0.023s
+user	0m0.014s
+sys	0m0.009s
 
 Day 08
 
-real	0m0.095s
-user	0m0.090s
-sys	0m0.004s
+real	0m0.103s
+user	0m0.094s
+sys	0m0.008s
 
 Day 09
 
-real	0m0.252s
-user	0m0.237s
-sys	0m0.012s
+real	0m0.370s
+user	0m0.347s
+sys	0m0.004s
 
 Day 10
 
-real	0m0.020s
-user	0m0.015s
+real	0m0.027s
+user	0m0.020s
+sys	0m0.004s
+
+Day 11
+
+real	0m0.038s
+user	0m0.033s
 sys	0m0.004s
 

@@ -51,10 +51,11 @@ def eval_operation(item: int, operation: tuple[str, str]):
     return eval(_expr)
 
 
-def update_item_worry_levels(monkey: Monkey) -> Monkey:
+def update_item_worry_levels(monkey: Monkey, floor_div: bool = True) -> Monkey:
     for idx, item in enumerate(monkey.items):
         _item = eval_operation(item, monkey.operation)
-        _item = _item // 3
+        if floor_div:
+            _item = _item // 3
         monkey.items[idx] = _item
     monkey.items_inspected += len(monkey.items)
     return monkey
@@ -68,16 +69,15 @@ def yeet_shit(monkey: Monkey) -> list[int]:
     return item_destinations
 
 
-def main():
-    parsed_input = parse_input()
+def simulate(parsed_input, n_rounds: int = 20, floor_div: bool = True) -> None :
     monkeys = [
         Monkey(parsed_input[idx:(idx + 6)])
         for idx in range(0, len(parsed_input), 6)
     ]
     
-    for _ in range(20):
+    for _ in range(n_rounds):
         for monkey in monkeys:
-            monkey = update_item_worry_levels(monkey)
+            monkey = update_item_worry_levels(monkey, floor_div)
             item_destinations = yeet_shit(monkey)
             for destination in item_destinations:
                 _item = monkey.items.pop(0)
@@ -85,11 +85,20 @@ def main():
     
     for monkey in monkeys:
         print(f'Monkey {monkey.id} inspected items {monkey.items_inspected} times')
-        print(monkey.items)
     
     monkey_business = [monkey.items_inspected for monkey in monkeys]
     monkey_business.sort(reverse=True)
     print(f'The level of monkey business is {monkey_business[0] * monkey_business[1]}')
+    return None
+
+
+def main():
+    parsed_input = parse_input()
+    simulate(parsed_input)
+
+    # who needs efficiency when you have brute force?
+    # simulate(parsed_input, 10000, False)
+    
 
 if __name__ == '__main__':
     main()
