@@ -6,7 +6,7 @@ from itertools import zip_longest
 def parse_input():
     literal_input = []
     with open(
-        os.path.dirname(os.path.abspath(__file__)) + '/sample.txt',
+        os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
         'r',
         encoding='utf-8') as f:
         for line in f:
@@ -30,13 +30,17 @@ def evaluate_packets(left, right):
         return False
 
     if isinstance(left, int) and isinstance(right, int):
-        return left <= right
+        if left == right:
+            return None
+        return left < right
 
     if isinstance(left, list) and isinstance(right, list):
-        _res = True
+        _res = None
         for x, y in zip_longest(left, right, fillvalue=None):
             _res = evaluate_packets(x, y)
-            if not _res:
+            if _res is None:
+                continue
+            else:
                 break
         return _res
 
@@ -55,15 +59,14 @@ def main():
     parsed_input = parse_input()
     tally = []
     for elem in parsed_input:
-        print(elem)
         if len(elem[0]) > len(elem[1]):
             tally.append(False)
             continue
         tally.append(evaluate_packets(elem[0], elem[1]))
-    print([
+    print(sum([
         idx + 1 if val is True else 0
         for idx, val in enumerate(tally)
-    ])
+    ]))
 
 if __name__ == '__main__':
     main()
