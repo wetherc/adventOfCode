@@ -24,29 +24,29 @@ def parse_input():
 
 
 def evaluate_packets(left, right):
-    print(left, right)
+    if left is None:
+        return True
+    if right is None:
+        return False
 
-    if isinstance(left, int) ^ isinstance(right, int):
-        left, right = (
-            [elem] if not isinstance(elem, list)
-            else elem
-            for elem in (left, right)
-        )
-        evaluate_packets(left, right)
-    if isinstance(left, list) and isinstance(right, list):
-        # if len(left) > len(right):
-        #     return False
-        # for (x, y) in zip_longest(left, right, fillvalue=99999):
-        for (x, y) in zip(left, right):
-            if not evaluate_packets(x, y):
-                return False
     if isinstance(left, int) and isinstance(right, int):
         return left <= right
 
-    # if left is None:
-    #     return True
-    # if right is None:
-    #     return False
+    if isinstance(left, list) and isinstance(right, list):
+        _res = True
+        for x, y in zip_longest(left, right, fillvalue=None):
+            _res = evaluate_packets(x, y)
+            if not _res:
+                break
+        return _res
+
+    if isinstance(left, int) ^ isinstance(right, int):
+        left, right = (
+            [elem] if isinstance(elem, int)
+            else elem
+            for elem in (left, right)
+        )
+        return evaluate_packets(left, right)
 
     return True
     
@@ -57,16 +57,13 @@ def main():
     for elem in parsed_input:
         print(elem)
         if len(elem[0]) > len(elem[1]):
-            print(False)
             tally.append(False)
             continue
-        _res = evaluate_packets(elem[0], elem[1])
-        tally.append(_res)
-        print(_res)
-    print(sum([
+        tally.append(evaluate_packets(elem[0], elem[1]))
+    print([
         idx + 1 if val is True else 0
         for idx, val in enumerate(tally)
-    ]))
+    ])
 
 if __name__ == '__main__':
     main()
