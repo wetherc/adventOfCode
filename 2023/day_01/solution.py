@@ -8,18 +8,6 @@ def load_input() -> list[str]:
     return input
 
 
-def multiple_replace(replacements, text):
-    # https://stackoverflow.com/a/15175239
-    regex = re.compile(
-        '(%s)' % '|'.join(
-            map(re.escape, replacements.keys())
-        )
-    )
-    return regex.sub(
-        lambda mo: replacements[mo.group()],
-        text) 
-
-
 def parse_numbers(input, strings=False) -> list[list[str]]:
     r = '1|2|3|4|5|6|7|8|9'
     if strings:
