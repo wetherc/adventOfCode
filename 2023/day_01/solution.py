@@ -20,35 +20,19 @@ def multiple_replace(replacements, text):
         text) 
 
 
-def parse_numbers(input, strings=False) -> list[str]:
+def parse_numbers(input, strings=False) -> list[list[str]]:
+    r = '1|2|3|4|5|6|7|8|9'
     if strings:
-        fucked_nums = {
-            'twone': 'twoone',
-            'sevenine': 'sevennine',
-            'eighthree': 'eightthree',
-            'oneight': 'oneeight',
-            'fiveight': 'fiveeight',
-            'threeight': 'threeeight'
-        }
-        input = [multiple_replace(fucked_nums, elem) for elem in input]
+        r += '|one|two|three|four|five|six|seven|eight|nine'
 
-        num_map = {
-            'zero': '0',
-            'one': '1',
-            'two': '2',
-            'three': '3',
-            'four': '4',
-            'five': '5',
-            'six': '6',
-            'seven': '7',
-            'eight': '8',
-            'nine': '9'
-        }
-        input = [multiple_replace(num_map, elem) for elem in input]
-        print(input[0:10])
-    input_nums = [re.sub('[^0-9]', '', elem) for elem in input]
-    print(input_nums[0:10])
-    return input_nums
+    numeric_input = []
+    for line in input:
+        numeric_input.append([
+            *map({n: str(i%9+1) for i, n in enumerate(r.split('|'))}.get,
+            re.findall(rf'(?=({r}))', line))
+        ])
+
+    return numeric_input
 
 
 def sum_inputs(calibrations) -> int:
@@ -62,8 +46,4 @@ if __name__ == '__main__':
     inputs_numeric = parse_numbers(inputs)
     inputs_why_though = parse_numbers(inputs, strings=True)
     print(f'The sum of calibration values is {sum_inputs(inputs_numeric)}')
-
-    # There's something exceptionally stupid going on in the inputs that I
-    # don't care nearly enough to debug. The correct answer is exactly 30
-    # less than what I'm calculating here, so whatever.
-    print(f'The updated sum of calibration values is {sum_inputs(inputs_why_though) - 30}')
+    print(f'The updated sum of calibration values is {sum_inputs(inputs_why_though)}')
