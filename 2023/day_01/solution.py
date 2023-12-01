@@ -9,14 +9,14 @@ def load_input() -> list[str]:
 
 
 def parse_numbers(input, strings=False) -> list[list[str]]:
-    r = '1|2|3|4|5|6|7|8|9'
+    r = '0|1|2|3|4|5|6|7|8|9'
     if strings:
-        r += '|one|two|three|four|five|six|seven|eight|nine'
+        r += '|zero|one|two|three|four|five|six|seven|eight|nine'
 
     numeric_input = []
     for line in input:
         numeric_input.append([
-            *map({n: str(i%9+1) for i, n in enumerate(r.split('|'))}.get,
+            *map({n: str(i%10) for i, n in enumerate(r.split('|'))}.get,
             re.findall(rf'(?=({r}))', line))
         ])
 
