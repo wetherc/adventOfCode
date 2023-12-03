@@ -57,7 +57,10 @@ if __name__ == '__main__':
     input = load_input()
     
     symbol_positions = [get_symbol_positions(line) for line in input]
-    number_positions = [get_number_positions(line, row) for row, line in enumerate(input)]
+    number_positions = [
+        get_number_positions(line, row)
+        for row, line in enumerate(input)
+    ]
 
     (_height, _width) = (len(input), len(input[0]))
 
@@ -69,7 +72,7 @@ if __name__ == '__main__':
                 symbol[0],
                 number_positions[
                     max(0, row - 1):
-                    min(_height, row + 2)  ## slices use exclusive upper bounds
+                    min(_height, row + 2)  # slices use exclusive upper bounds
                 ]
             )
 
@@ -79,7 +82,7 @@ if __name__ == '__main__':
                         symbol[0],
                         number_positions[
                             max(0, row - 1):
-                            min(_height, row + 2)  ## slices use exclusive upper bounds
+                            min(_height, row + 2)
                         ]
                     )
                 )
