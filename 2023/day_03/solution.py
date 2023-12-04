@@ -8,26 +8,23 @@ def load_input():
     return input
 
 
-def get_symbol_positions(line):
-    _matches = re.finditer(r'[^a-zA-Z0-9\.]', line)
-    positions = [
+def get_positions(row, line):
+    _symbol_matches = re.finditer(r'[^a-zA-Z0-9\.]', line)
+    symbol_positions = [
         (match.start(), match.group(0))
-        for match in _matches]
-
-    return positions
-
-
-def get_number_positions(line, row):
-    _matches = re.finditer(r'[0-9]+', line)
-    positions = [
+        for match in _symbol_matches]
+    
+    _number_matches = re.finditer(r'[0-9]+', line)
+    number_positions = [
         (match.start(), match.end(), match.group(0), row)
-        for match in _matches]
+        for match in _number_matches]
+    
+    return symbol_positions, number_positions
 
-    return positions
 
-
-def check_adjacency(coord, numbers):
-    matches = []
+def check_adjacancies(coord, numbers, is_asterisk=False):
+    number_matches = []
+    gear_matches = []
     for row in numbers:
         _matches = [
             num for num in row if
@@ -35,32 +32,24 @@ def check_adjacency(coord, numbers):
             num[0] - coord == 1 or
             num[1] - coord == 0
         ]
-        matches += _matches
-
-    return matches
-
-def check_gear_ratio(coord, numbers):
-    matches = []
-    for row in numbers:
-        _matches = (
-            int(num[2]) for num in row if
-            num[0] <= coord <= num[1] or
-            num[0] - coord == 1 or
-            num[1] - coord == 0
-        )
-        matches += _matches
-
-    return matches if len(matches) == 2 else (0, 0)
+        number_matches += _matches
+        if is_asterisk:
+            gear_matches += [int(_match[2]) for _match in _matches]
+    if len(gear_matches) != 2:
+        gear_matches = (0, 0)
+    
+    return number_matches, gear_matches
 
 
 if __name__ == '__main__':
     input = load_input()
     
-    symbol_positions = [get_symbol_positions(line) for line in input]
-    number_positions = [
-        get_number_positions(line, row)
-        for row, line in enumerate(input)
-    ]
+    symbol_positions = []
+    number_positions = []
+    for row, line in enumerate(input):
+        _sym, _num = get_positions(row, line)
+        symbol_positions.append(_sym)
+        number_positions.append(_num)
 
     (_height, _width) = (len(input), len(input[0]))
 
@@ -68,26 +57,17 @@ if __name__ == '__main__':
     gear_ratios = []
     for row in range(len(input)):
         for symbol in symbol_positions[row]:
-            matches += check_adjacency(
+            _num_matches, _gear_matches = check_adjacancies(
                 symbol[0],
                 number_positions[
                     max(0, row - 1):
                     min(_height, row + 2)  # slices use exclusive upper bounds
-                ]
+                ],
+                symbol[1] == '*'
             )
-
-            if symbol[1] == '*':
-                gear_ratios.append(
-                    check_gear_ratio(
-                        symbol[0],
-                        number_positions[
-                            max(0, row - 1):
-                            min(_height, row + 2)
-                        ]
-                    )
-                )
-            
-    # matched = set([int(m[2]) for m in matches])
+            matches += _num_matches
+            gear_ratios.append(_gear_matches)
+                        
     matched = [int(m[2]) for m in list(set(matches))]
     print(
         f'matched {len(matched)} out of a possible',
