@@ -1,9 +1,13 @@
 import re
+import os
 
 
 def load_input():
     input = []
-    with open('input.txt', 'r') as f:
+    with open(
+        os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
+        'r'
+    ) as f:
         for line in f:
             _parts = re.split(': |\| ', line.strip())
             _item = {

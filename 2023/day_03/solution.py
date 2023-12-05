@@ -5,7 +5,7 @@ from typing import List, Tuple
 
 def load_input() -> List[str]:
     with open(
-        os.path.dirname(os.path.abspath(__file__)) + 'input.txt',
+        os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
         'r'
     ) as f:
         input = f.read().splitlines()

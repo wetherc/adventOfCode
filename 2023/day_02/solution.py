@@ -6,7 +6,7 @@ from typing import List
 def load_input():
     input = []
     with open(
-        os.path.dirname(os.path.abspath(__file__)) + 'input.txt',
+        os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
         'r'
     ) as f:
         for line in f:
