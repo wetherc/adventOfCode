@@ -1,14 +1,19 @@
 import re
+import os
+from typing import List
 
 
-def load_input() -> list[str]:
-    with open('input.txt', 'r') as f:
+def load_input() -> List[str]:
+    with open(
+        os.path.dirname(os.path.abspath(__file__)) + 'input.txt',
+        'r'
+    ) as f:
         input = f.read().splitlines()
 
     return input
 
 
-def parse_numbers(input, strings=False) -> list[list[str]]:
+def parse_numbers(input, strings=False) -> List[List[str]]:
     r = '0|1|2|3|4|5|6|7|8|9'
     if strings:
         r += '|zero|one|two|three|four|five|six|seven|eight|nine'

@@ -1,9 +1,14 @@
 import re
+import os
+from typing import List
 
 
 def load_input():
     input = []
-    with open('input.txt', 'r') as f:
+    with open(
+        os.path.dirname(os.path.abspath(__file__)) + 'input.txt',
+        'r'
+    ) as f:
         for line in f:
             _parts = re.split(': |; ', line.strip())
             _item = {
@@ -18,7 +23,7 @@ def load_input():
     return input
 
 
-def cube_totals(game, max_red, max_green, max_blue):
+def cube_totals(game, max_red: int, max_green:int , max_blue: int) -> bool:
     if (max([int(_round.get('red', 0)) for _round in game]) > max_red):
         return False
     if (max([int(_round.get('green', 0)) for _round in game]) > max_green):
@@ -29,7 +34,7 @@ def cube_totals(game, max_red, max_green, max_blue):
     return True
 
 
-def fewest_dice(game):
+def fewest_dice(game) -> int:
     _max_red = 0
     _max_green = 0
     _max_blue = 0

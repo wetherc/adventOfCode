@@ -1,14 +1,19 @@
 import re
+import os
+from typing import List, Tuple
 
 
-def load_input():
-    with open('input.txt', 'r') as f:
+def load_input() -> List[str]:
+    with open(
+        os.path.dirname(os.path.abspath(__file__)) + 'input.txt',
+        'r'
+    ) as f:
         input = f.read().splitlines()
 
     return input
 
 
-def get_positions(row, line):
+def get_positions(row: int, line: Tuple[str]):
     _symbol_matches = re.finditer(r'[^a-zA-Z0-9\.]', line)
     symbol_positions = [
         (match.start(), match.group(0))
@@ -22,7 +27,7 @@ def get_positions(row, line):
     return symbol_positions, number_positions
 
 
-def check_adjacancies(coord, numbers, is_asterisk=False):
+def check_adjacancies(coord, numbers, is_asterisk: bool=False):
     number_matches = []
     gear_matches = []
     for row in numbers:
