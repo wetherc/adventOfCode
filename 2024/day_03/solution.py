@@ -4,8 +4,9 @@ from typing import List, Tuple
 
 
 def load_input(test: bool=False) -> List[List[int]]:
+    filename = 'input' if not test else 'sample'
     with open(
-        os.path.dirname(os.path.abspath(__file__)) + '/input.txt',
+        os.path.dirname(os.path.abspath(__file__)) + f'/{filename}.txt',
         'r'
     ) as f:
         input = f.read()
@@ -26,9 +27,8 @@ def get_statements(input: str, conditionals=False) -> List[Tuple[str, int, int]]
 
     for match in matches:
         if match in ['do()', 'don\'t()']:
-            if not conditionals:
-                continue
-            conditional_process = conditional_map[match]
+            if conditionals:
+                conditional_process = conditional_map[match]
             continue
 
         if conditional_process:
