@@ -54,7 +54,6 @@ if __name__ == '__main__':
 
     for elem in ordering:
         ordering_dict[elem[0]] = [elem[1]] + ordering_dict.get(elem[0], [])
-        reversed_dict[elem[1]] = [elem[0]] + ordering_dict.get(elem[1], [])
     
     ordering_dict = dict(
         zip(ordering_dict.keys(), map(set, ordering_dict.values()))
