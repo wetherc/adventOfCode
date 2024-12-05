@@ -51,7 +51,7 @@ def reorder_pages(pages, rules) -> List[str]:
 if __name__ == '__main__':
     ordering, updates = load_input(test=False)
     ordering_dict = {}
-    reversed_dict = {}
+
     for elem in ordering:
         ordering_dict[elem[0]] = [elem[1]] + ordering_dict.get(elem[0], [])
         reversed_dict[elem[1]] = [elem[0]] + ordering_dict.get(elem[1], [])
