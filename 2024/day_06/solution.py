@@ -139,10 +139,10 @@ def traverse_room(room: Room, guard: Guard, simulate_loops: bool=False,
 
     while _in_room:
         _iters += 1
-        if progress:
+        if progress and _iters % 10 == 0:
             _elapsed = round(time.time() - _start_time, 2)
             os.system('cls' if os.name == 'nt' else 'clear')
-            print(f'step {_iters} ({_elapsed} secs): {guard.direction.name}, {guard.position.to_tuple()}')
+            print(f'step {_iters} ({_elapsed} secs)')
 
         if room.check_obstacle_collision(guard.position, guard.direction):
             _obstacle = (
@@ -160,10 +160,16 @@ def traverse_room(room: Room, guard: Guard, simulate_loops: bool=False,
                 guard.rotate()
         else:
             if simulate_loops:
-                room2 = deepcopy(room)
-                room2.add_obstacle(guard.position, guard.direction)
-                guard2 = deepcopy(guard)
-                traverse_room(room2, guard2)
+                # I'm making the assumption that we cannot add an obstacle
+                # to a location in the guard's path that the guard has already
+                # visited and later loops back to, traveling in a different
+                # direction. I do not know if this is a valid assumption to
+                # make or not
+                if not guard.position.move(guard.direction).to_tuple() in guard.position_history:
+                    room2 = deepcopy(room)
+                    room2.add_obstacle(guard.position, guard.direction)
+                    guard2 = deepcopy(guard)
+                    traverse_room(room2, guard2)
 
             guard.step_forward()
         _in_room = room.check_in_room(guard.position)
@@ -175,5 +181,7 @@ if __name__ == '__main__':
 
     _guard = traverse_room(_room, _guard, simulate_loops=True, progress=True)
     print(len(set(_guard.position_history)))
+
+    # currently getting 1637 versus the (presumably?) correct 1663
     print(len(LOOPIES))
   
