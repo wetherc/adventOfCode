@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import List, Tuple, Set
 
 
-LOOPIES = set()
+LOOPIES: Set[Tuple[str, Tuple[int, int]]] = set()
 
 
 class Direction(Enum):
@@ -139,26 +139,35 @@ def traverse_room(room: Room, guard: Guard, simulate_loops: bool=False,
 
     while _in_room:
         _iters += 1
-        if progress and _iters % 10 == 0:
+        if progress and _iters % 100 == 0:
             _elapsed = round(time.time() - _start_time, 2)
             os.system('cls' if os.name == 'nt' else 'clear')
             print(f'step {_iters} ({_elapsed} secs)')
 
+        # if stepping forward would cause a collision
         if room.check_obstacle_collision(guard.position, guard.direction):
+            # get the coordinates of the obstacle
             _obstacle = (
                 guard.direction.name,
                 guard.position.move(guard.direction).to_tuple()
             )
+
+            # if it's been encountered before from the same direction
             if _obstacle in _obstacles:
+                # we've found a loop!
                 global LOOPIES
                 LOOPIES.add(_obstacle)
                 if debug:
                     print(f"Loop from obstacle at {guard.position.move(guard.direction).to_tuple()}")
                 break
             else:
+                # otherwise, add it to the list of previously encountered
+                # obstacles
                 _obstacles.add(_obstacle)
                 guard.rotate()
+        # if the next space is empty
         else:
+            # if we hate performant code
             if simulate_loops:
                 # I'm making the assumption that we cannot add an obstacle
                 # to a location in the guard's path that the guard has already
@@ -167,8 +176,12 @@ def traverse_room(room: Room, guard: Guard, simulate_loops: bool=False,
                 # make or not
                 if not guard.position.move(guard.direction).to_tuple() in guard.position_history:
                     room2 = deepcopy(room)
+                    # add a what-if obstacle to the empty position
                     room2.add_obstacle(guard.position, guard.direction)
                     guard2 = deepcopy(guard)
+
+                    # simulate traversing the remainder of the room with
+                    # the newly-added obstacle
                     traverse_room(room2, guard2)
 
             guard.step_forward()
@@ -177,7 +190,7 @@ def traverse_room(room: Room, guard: Guard, simulate_loops: bool=False,
 
 
 if __name__ == '__main__':
-    _room, _guard = load_input(test=False)
+    _room, _guard = load_input(test=True)
 
     _guard = traverse_room(_room, _guard, simulate_loops=True, progress=True)
     print(len(set(_guard.position_history)))
