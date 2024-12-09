@@ -51,11 +51,26 @@ def get_antenna_positions(map: List[List[str]]) -> Dict[str, List[Coordinate]]:
 
 
 def map_antinodes_for_frequency(antennas: List[Coordinate]) -> List[Coordinate]:
-    antennas = itertools.permutations(antennas, 2)
+    antenna_combinations = itertools.permutations(antennas, 2)
     antinode_coordinates = [
-        pair[0].get_antinode(pair[1]) for pair in antennas
+        pair[0].get_antinode(pair[1]) for pair in antenna_combinations
     ]
 
+    return antinode_coordinates
+
+def map_antinodes_for_slope(antennas: List[Coordinate], map_size: Tuple[int, int]) -> List[Coordinate]:
+    antenna_combinations = itertools.permutations(antennas, 2)
+    antinode_coordinates = []
+    for pair in antenna_combinations:
+        slope = pair[0].get_distance(pair[1])
+
+        _coordinate = pair[0]
+        while 0 <= _coordinate.x < map_size[0] and 0 <= _coordinate.y < map_size[1]:
+            antinode_coordinates.append(_coordinate)
+            _x = _coordinate.x + slope[0]
+            _y = _coordinate.y + slope[1]
+
+            _coordinate = Coordinate(_x, _y)
     return antinode_coordinates
 
 
@@ -74,10 +89,29 @@ if __name__ == '__main__':
         ]
 
     for antinode in antinodes:
-        try:
-            antenna_map[antinode.y][antinode.x] = '#'
-        except IndexError:
-            print(antinode)
+        antenna_map[antinode.y][antinode.x] = (
+            '#' if antenna_map[antinode.y][antinode.x] == '.'
+            else antenna_map[antinode.y][antinode.x]
+        )
+
+    _n_antinodes = len(set([node.to_tuple() for node in antinodes]))
+    print(f'{"-"*40}\n- Antinode Map: {_n_antinodes} unique locations\n{"-"*40}')
+    render_map(antenna_map)
+
+    antinodes = []
+    for frequency in antenna_positions.keys():
+        antinodes += [
+            node for node in map_antinodes_for_slope(
+                antenna_positions[frequency],
+                (len(antenna_map[0]), len(antenna_map))
+            )
+        ]
+
+    for antinode in antinodes:
+        antenna_map[antinode.y][antinode.x] = (
+            '#' if antenna_map[antinode.y][antinode.x] == '.'
+            else antenna_map[antinode.y][antinode.x]
+        )
 
     _n_antinodes = len(set([node.to_tuple() for node in antinodes]))
     print(f'{"-"*40}\n- Antinode Map: {_n_antinodes} unique locations\n{"-"*40}')
